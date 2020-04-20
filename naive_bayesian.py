@@ -18,14 +18,19 @@ def prob(train_x, train_y):
     conditional_prob = (conditional_sum.T + 1) / (prior + 2)
     return prior_prob, conditional_prob
 
+def test(test_xm, conditional_one_prob_log, conditional_zero_prob_log):
+    predict_prob = np.zeros(10)
+    for i in range(10):
+        for j in range(64):
+            predict_prob[i] += conditional_one_prob_log[j][i] \
+                if test_xm[j] > 0 else conditional_zero_prob_log[j][i]
+    return np.argmax(predict_prob)
+
 def naive_bayesian(test_xm, conditional_one_prob_log, conditional_zero_prob_log):
+    test_xm = np.reshape(test_xm, (450, -1))
     predict = np.zeros(450)
-    for m in range(450):
-        for i in range(10):
-            predict_prob = np.zeros(10)
-            for j in range(64):
-                predict_prob[i] += conditional_one_prob_log[j][i] if test_xm[m][j] > 0 else conditional_zero_prob_log[j][i]
-        predict[m] = np.argmax(predict_prob)
+    for i in range(450):
+        predict[i] = test(test_xm[i], conditional_one_prob_log, conditional_zero_prob_log)
     return predict
 
 
@@ -35,8 +40,6 @@ if __name__ == '__main__':
     train_x, test_x, train_y, test_y = train_test_split(data, digits.target, test_size=0.25, random_state=30)
     train_xm = (train_x > 0).astype('uint8')
     test_xm = (test_x > 0).astype('uint8')
-    train_xm = np.reshape(train_xm, (1347, -1))
-    test_xm = np.reshape(test_xm, (450, -1))
     prior_prob, conditional_prob = prob(train_xm, train_y)
     conditional_one_prob_log = np.log(conditional_prob)
     conditional_zero_prob_log = np.log(1 - conditional_prob)

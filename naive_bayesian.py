@@ -38,8 +38,7 @@ def naive_bayesian(test_xm, conditional_one_prob_log, conditional_zero_prob_log)
 
 if __name__ == '__main__':
     digits = load_digits()
-    data = digits.data
-    train_x, test_x, train_y, test_y = train_test_split(data, digits.target, test_size=0.25, random_state=30)
+    train_x, test_x, train_y, test_y = train_test_split(digits.data, digits.target, test_size=0.25, random_state=30)
     train_xm = (train_x > 0).astype('uint8')
     test_xm = (test_x > 0).astype('uint8')
     conditional_one_prob_log, conditional_zero_prob_log = conditional_prob(train_xm, train_y)

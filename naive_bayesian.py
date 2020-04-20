@@ -16,7 +16,9 @@ def prob(train_x, train_y):
     # 先验概率和条件概率
     prior_prob = (prior + 1) / 1357
     conditional_prob = (conditional_sum.T + 1) / (prior + 2)
-    return prior_prob, conditional_prob
+    conditional_one_prob_log = np.log(conditional_prob)
+    conditional_zero_prob_log = np.log(1 - conditional_prob)
+    return conditional_one_prob_log, conditional_zero_prob_log
 
 def test(test_xm, conditional_one_prob_log, conditional_zero_prob_log):
     predict_prob = np.zeros(10)
@@ -31,7 +33,7 @@ def naive_bayesian(test_xm, conditional_one_prob_log, conditional_zero_prob_log)
     predict = np.zeros(450)
     for i in range(450):
         predict[i] = test(test_xm[i], conditional_one_prob_log, conditional_zero_prob_log)
-    return predict
+    print("朴素贝叶斯分类器准确率: %.4lf" % accuracy_score(predict_y, test_y))
 
 
 if __name__ == '__main__':
@@ -40,9 +42,5 @@ if __name__ == '__main__':
     train_x, test_x, train_y, test_y = train_test_split(data, digits.target, test_size=0.25, random_state=30)
     train_xm = (train_x > 0).astype('uint8')
     test_xm = (test_x > 0).astype('uint8')
-    prior_prob, conditional_prob = prob(train_xm, train_y)
-    conditional_one_prob_log = np.log(conditional_prob)
-    conditional_zero_prob_log = np.log(1 - conditional_prob)
-    predict_y = naive_bayesian(test_xm, conditional_one_prob_log, conditional_zero_prob_log)
-
-    print("朴素贝叶斯分类器准确率: %.4lf" % accuracy_score(predict_y, test_y))
+    conditional_one_prob_log, conditional_zero_prob_log = conditional_prob(train_xm, train_y)
+    naive_bayesian(test_xm, test_y, conditional_one_prob_log, conditional_zero_prob_log)

@@ -13,7 +13,7 @@ def distance(train_x, test_x, i):
 # 查找最近的K个数据所对应的预测值
 def get_number(all_dist):
     all_number = []
-    for i in range(10):
+    for i in range(5):
         min_index = np.argmin(all_dist)
         number = (train_y[min_index]).tolist()
         all_number.append(number)
@@ -40,8 +40,7 @@ def knn(train_x, test_x, test_y):
 
 if __name__ == '__main__':
     digits = load_digits()
-    data = digits.data
-    train_x, test_x, train_y, test_y = train_test_split(data, digits.target, test_size=0.25, random_state=30)
+    train_x, test_x, train_y, test_y = train_test_split(digits.data, digits.target, test_size=0.25, random_state=30)
     ss = preprocessing.StandardScaler()
     train_xs = ss.fit_transform(train_x)
     test_xs = ss.transform(test_x)

@@ -15,7 +15,7 @@ def get_number(all_dist):
     all_number = []
     for i in range(10):
         min_index = np.argmin(all_dist)
-        number = np.argmax((train_y[min_index])).tolist()
+        number = (train_y[min_index]).tolist()
         all_number.append(number)
         #在距离数组中，将最小的距离值删去
         min_number = min(all_dist)
